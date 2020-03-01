@@ -10,21 +10,36 @@ class MessageParserSpec
     with ScalaCheck {
 
   "GameStart" >> prop {
-    (map: GameMap, goldOnLeft: Boolean, duration: Int, isAttractModeEnabled: Boolean) =>
+    (
+        map: GameMap,
+        goldOnLeft: Boolean,
+        duration: Int,
+        isAttractModeEnabled: Boolean
+    ) =>
       val event =
         s"![k[gamestart],v[${map.entryName},${goldOnLeft.toString.capitalize},$duration,${isAttractModeEnabled.toString.capitalize}]]!"
-      MessageParser.parseEvent(event).get.value must_== GameStart(map, goldOnLeft, duration, isAttractModeEnabled)
+      MessageParser.parseEvent(event).get.value must_== GameStart(
+        map,
+        goldOnLeft,
+        duration,
+        isAttractModeEnabled
+      )
   }.set(workers = 1)
 
   "GameEnd" >> prop {
     (
-    map: GameMap,
-    unknown1: Boolean,
-    duration: Double,
-    unknown2: Boolean
-) => 
+        map: GameMap,
+        unknown1: Boolean,
+        duration: Double,
+        unknown2: Boolean
+    ) =>
       val event =
         s"![k[gameend],v[${map.entryName},${unknown1.toString.capitalize},$duration,${unknown2.toString.capitalize}]]!"
-      MessageParser.parseEvent(event).get.value must_== GameEnd(map, unknown1, duration, unknown2)
+      MessageParser.parseEvent(event).get.value must_== GameEnd(
+        map,
+        unknown1,
+        duration,
+        unknown2
+      )
   }
 }
