@@ -5,41 +5,64 @@ import kqtracker.model._
 import enumeratum.scalacheck._
 import enumeratum.values.scalacheck._
 import fastparse._, NoWhitespace._
+import org.scalacheck._
+import org.scalacheck.Arbitrary._
+import java.math.MathContext
 class MessageParserSpec
     extends org.specs2.mutable.Specification
     with ScalaCheck {
 
-  "GameStart" >> prop {
+  val positionArb = Arbitrary(Gen.choose(0, 2000))
+
+  val durationArb = Arbitrary(
+    for {
+      n <- Gen.choose(1, 600)
+      d <- Gen.choose(0, 99909)
+    } yield (n + d * 0.00001)
+  )
+
+
+  "Player Kill" >> prop {
+    (
+        x: Int,
+        y: Int,
+        killer: Player,
+        victim: Player,
+        victimType: PlayerType
+    ) =>
+      val event =
+        s"![k[playerKill],v[$x,$y,${killer.entryName},${victim.entryName},${victimType.entryName}]]!"
+      MessageParser.parseEvent(event).get.value must_== PlayerKill(
+        x, y, killer, victim, victimType
+      )
+  }.setArbitrary1(positionArb).setArbitrary2(positionArb)
+
+  "Game Start" >> prop {
     (
         map: GameMap,
-        goldOnLeft: Boolean,
-        duration: Int,
         isAttractModeEnabled: Boolean
     ) =>
       val event =
-        s"![k[gamestart],v[${map.entryName},${goldOnLeft.toString.capitalize},$duration,${isAttractModeEnabled.toString.capitalize}]]!"
+        s"![k[gamestart],v[${map.entryName},False,0,${isAttractModeEnabled.toString.capitalize}]]!"
       MessageParser.parseEvent(event).get.value must_== GameStart(
         map,
-        goldOnLeft,
+        isAttractModeEnabled
+      )
+  }
+
+  "Game End" >> prop {
+    (
+        map: GameMap,
+        duration: Double,
+        isAttractModeEnabled: Boolean
+    ) =>
+      val event =
+        f"![k[gameend],v[${map.entryName},False,$duration,${isAttractModeEnabled.toString.capitalize}]]!"
+        println(event)
+      MessageParser.parseEvent(event).get.value must_== GameEnd(
+        map,
         duration,
         isAttractModeEnabled
       )
-  }.set(workers = 1)
-
-  "GameEnd" >> prop {
-    (
-        map: GameMap,
-        unknown1: Boolean,
-        duration: Double,
-        unknown2: Boolean
-    ) =>
-      val event =
-        s"![k[gameend],v[${map.entryName},${unknown1.toString.capitalize},$duration,${unknown2.toString.capitalize}]]!"
-      MessageParser.parseEvent(event).get.value must_== GameEnd(
-        map,
-        unknown1,
-        duration,
-        unknown2
-      )
-  }
+  }.setArbitrary2(durationArb)
 }
