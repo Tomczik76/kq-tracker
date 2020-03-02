@@ -2,7 +2,7 @@ package kqtracker.parser
 
 import fastparse._, NoWhitespace._
 import kqtracker.model._
-object MessageParser {
+object EventParser {
 
   def valueChars[_: P] = P(CharsWhile((c: Char) => c != '[' && c != ']'))
 
@@ -46,7 +46,7 @@ object MessageParser {
 
   def gameEnd[_: P] = event("gameend", gameEndValue)
 
-  def parser[_: P]: P[GameEvent] = P(gameStart | gameEnd | playerKill)
+  def gameEvent[_: P]: P[GameEvent] = P(gameStart | gameEnd | playerKill)
 
-  def parseEvent(event: String) = parse(event, parser(_))
+  def parseEvent(event: String) = parse(event, gameEvent(_))
 }

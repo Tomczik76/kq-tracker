@@ -15,6 +15,7 @@ lazy val root = (project in file("."))
       "org.http4s"      %% "http4s-blaze-client"    % Http4sVersion,
       "org.http4s"      %% "http4s-circe"           % Http4sVersion,
       "org.http4s"      %% "http4s-dsl"             % Http4sVersion,
+      "org.http4s"      %% "http4s-jdk-http-client" % "0.2.0",
       "io.circe"        %% "circe-generic"          % CirceVersion,
       "com.beachape"    %% "enumeratum"             % enumeratumScalacheckVersion,
       "com.beachape"    %% "enumeratum-scalacheck"  % enumeratumScalacheckVersion % "test",

@@ -8,7 +8,7 @@ import fastparse._, NoWhitespace._
 import org.scalacheck._
 import org.scalacheck.Arbitrary._
 import java.math.MathContext
-class MessageParserSpec
+class EventParserSpec
     extends org.specs2.mutable.Specification
     with ScalaCheck {
 
@@ -21,7 +21,6 @@ class MessageParserSpec
     } yield (n + d * 0.00001)
   )
 
-
   "Player Kill" >> prop {
     (
         x: Int,
@@ -32,7 +31,7 @@ class MessageParserSpec
     ) =>
       val event =
         s"![k[playerKill],v[$x,$y,${killer.entryName},${victim.entryName},${victimType.entryName}]]!"
-      MessageParser.parseEvent(event).get.value must_== PlayerKill(
+      EventParser.parseEvent(event).get.value must_== PlayerKill(
         x, y, killer, victim, victimType
       )
   }.setArbitrary1(positionArb).setArbitrary2(positionArb)
@@ -44,7 +43,7 @@ class MessageParserSpec
     ) =>
       val event =
         s"![k[gamestart],v[${map.entryName},False,0,${isAttractModeEnabled.toString.capitalize}]]!"
-      MessageParser.parseEvent(event).get.value must_== GameStart(
+      EventParser.parseEvent(event).get.value must_== GameStart(
         map,
         isAttractModeEnabled
       )
@@ -59,7 +58,7 @@ class MessageParserSpec
       val event =
         f"![k[gameend],v[${map.entryName},False,$duration,${isAttractModeEnabled.toString.capitalize}]]!"
         println(event)
-      MessageParser.parseEvent(event).get.value must_== GameEnd(
+      EventParser.parseEvent(event).get.value must_== GameEnd(
         map,
         duration,
         isAttractModeEnabled
