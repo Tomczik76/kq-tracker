@@ -17,6 +17,7 @@ lazy val root = (project in file("."))
       "org.http4s"      %% "http4s-dsl"             % Http4sVersion,
       "org.http4s"      %% "http4s-jdk-http-client" % "0.2.0",
       "io.circe"        %% "circe-generic"          % CirceVersion,
+      "org.tpolecat"    %% "skunk-core"             % "0.0.7",
       "com.beachape"    %% "enumeratum"             % enumeratumScalacheckVersion,
       "com.beachape"    %% "enumeratum-scalacheck"  % enumeratumScalacheckVersion % "test",
       "org.specs2"      %% "specs2-core"            % Specs2Version  % "test",

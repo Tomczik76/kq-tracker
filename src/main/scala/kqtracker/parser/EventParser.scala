@@ -48,5 +48,5 @@ object EventParser {
 
   def gameEvent[_: P]: P[GameEvent] = P(gameStart | gameEnd | playerKill)
 
-  def parseEvent(event: String) = parse(event, gameEvent(_))
+  def parseEvent(event: String): Parsed[GameEvent] = parse(event, gameEvent(_))
 }
